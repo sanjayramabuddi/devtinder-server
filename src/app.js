@@ -4,7 +4,6 @@ const User = require("./model/user");
 const dbConnect = require("./config/database");
 const express = require("express");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -69,10 +68,12 @@ app.post("/login", async (req, res) => {
       });
     }
 
-    const verifyUser = await bcrypt.compare(password, findUser.password);
+    const verifyUser = await findUser.validatePassword(password);
     if (verifyUser) {
-      const token = jwt.sign({ _id: findUser._id }, "Devtinder@123");
-      res.cookie("token", token);
+      const token = await findUser.getJWT();
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
       res.status(201).json({
         message: "Login Succcessful",
         token: token,
