@@ -1,6 +1,6 @@
 const validator = require("validator");
 
-function validateCredentials(firstName, lastName, email, password) {
+function validateSignup(firstName, lastName, email, password) {
   if (!firstName || !lastName) {
     throw new Error("First name and last name are required");
   }
@@ -15,4 +15,21 @@ function validateCredentials(firstName, lastName, email, password) {
   return true;
 }
 
-module.exports = { validateCredentials };
+function validateEditUser(req) {
+  const allowedEdits = [
+    "firstName",
+    "lastName",
+    "age",
+    "gender",
+    "imageUrl",
+    "skills",
+    "about",
+  ];
+  // const {firstName, lastName, age, gender, imageUrl, skills, about} = req;
+  const isAllowed = Object.keys(req.body).every(
+    (field) => allowedEdits.includes(field),      // .every => checking
+  );
+  return isAllowed;
+}
+
+module.exports = { validateSignup, validateEditUser };
