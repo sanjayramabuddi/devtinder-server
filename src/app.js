@@ -1,11 +1,13 @@
-const express = require("express");
-const app = express();
-const dbConnect = require("./config/database");
-const User = require("./model/user");
 const { validateCredentials } = require("./utils/validate");
+const { authUser } = require("./middlewares/auth");
+const User = require("./model/user");
+const dbConnect = require("./config/database");
+const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+
+const app = express();
 const SALT = 10;
 
 app.use(cookieParser());
@@ -69,7 +71,7 @@ app.post("/login", async (req, res) => {
 
     const verifyUser = await bcrypt.compare(password, findUser.password);
     if (verifyUser) {
-      const token = jwt.sign({ _id: findUser._id }, "Devtown@123");
+      const token = jwt.sign({ _id: findUser._id }, "Devtinder@123");
       res.cookie("token", token);
       res.status(201).json({
         message: "Login Succcessful",
@@ -88,22 +90,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/feed", async (req, res) => {
+app.get("/feed", authUser, async (req, res) => {
   try {
-    const cookies = req.cookies;
-    const { token } = cookies;
-    if (!token) {
-      res.status(401).json({
-        message: "Invalid Data",
-      });
-    }
-
-    const verfied = await jwt.verify(token, "Devtown@123");
-    const user = await User.findById(verfied._id);
-
-    if (!user) res.send("User doesn't exist");
-
-    res.send(user);
+    res.send(req.user);
   } catch (error) {
     res.status(401).json({
       message: "Invalid Credentials",
