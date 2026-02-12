@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minLength: 3,
-      maxLengthL: 30,
+      maxLength: 30,
     },
     lastName: {
       type: String,
@@ -42,7 +42,6 @@ const userSchema = new mongoose.Schema(
     age: {
       type: Number,
       min: 18,
-      default: 26,
     },
     gender: {
       type: String,
@@ -68,11 +67,16 @@ const userSchema = new mongoose.Schema(
     skills: {
       type: [String],
       default: [],
-      trim: true,
+      // trim: true,
+      set: (skills) => skills.map((skill) => skill.trim()),
       // validate: {
       //   validator: (arr) => arr.every((skill) => skill.trim().length > 0),
       //   message: "Skills cannot contain empty values",
       // },
+    },
+    about: {
+      type: String,
+      maxLength: 100,
     },
   },
   {
@@ -89,10 +93,16 @@ userSchema.methods.getJWT = function () {
 };
 
 userSchema.methods.validatePassword = async function (password) {
-  const user = this;
-  const verifyPassword = await bcrypt.compare(password, user.password);
-  return verifyPassword;
+  return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+
+//   const hashedPassword = await bcrypt.hash(this.password, 10);
+//   this.password = hashedPassword;
+//   next();
+// });
+
+const UserModel = mongoose.model("User", userSchema);
+module.exports = UserModel;
