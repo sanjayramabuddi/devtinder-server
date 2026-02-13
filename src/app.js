@@ -1,6 +1,7 @@
 const dbConnection = require("./config/database");
 const express = require("express");
 const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
 const app = express();
 
@@ -20,7 +21,7 @@ app.use("/", userRouter);
 dbConnection()
   .then(() => {
     console.log("Database connection successfull!!");
-    app.listen(3000, () => {
+    app.listen(process.env.PORT, () => {
       console.log("Server started on Port 3000");
     });
   })

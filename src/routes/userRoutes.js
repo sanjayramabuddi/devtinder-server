@@ -10,6 +10,8 @@ const USER_DATA = "firstName lastName about";
 userRouter.get("/user/connections", authUser, async (req, res) => {
   try {
     const loggedInUser = req.user;
+
+    // Getting all the connections I have sent request to or received to me
     const allConnections = await ConnectionRequestModel.find({
       $or: [
         { toUserId: loggedInUser._id, status: "accepted" },
@@ -26,7 +28,7 @@ userRouter.get("/user/connections", authUser, async (req, res) => {
       return request.fromUserId;
     });
     res.status(200).json({
-      message: "All connections fetched",
+      message: "All connections",
       data,
     });
   } catch (error) {
@@ -40,6 +42,8 @@ userRouter.get("/user/connections", authUser, async (req, res) => {
 userRouter.get("/user/requests/received", authUser, async (req, res) => {
   try {
     const loggedInUser = req.user;
+
+    // Getting all the requests I have received in my profile
     const receivedRequests = await ConnectionRequestModel.find({
       toUserId: loggedInUser._id,
       status: "interested",
@@ -49,7 +53,6 @@ userRouter.get("/user/requests/received", authUser, async (req, res) => {
     //   .populate("fromUserId", ["firstName", "lastName", "about"]);
 
     res.status(200).json({
-      message: "Connection requests found",
       data: receivedRequests,
     });
   } catch (error) {
@@ -83,6 +86,7 @@ userRouter.get("/user/feed", authUser, async (req, res) => {
       hidingUsersFromFeed.add(request.toUserId.toString());
     });
 
+    // Filtering from the Users Db to show only unique feed
     const usersToShow = await UserModel.find({
       $and: [
         { _id: { $nin: Array.from(hidingUsersFromFeed) } }, // Converting Set to Array

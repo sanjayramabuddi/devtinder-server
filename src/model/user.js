@@ -52,9 +52,12 @@ const userSchema = new mongoose.Schema(
           throw new Error("Gender is not applicable (male, female, other)");
         }
       },
-      // enum: ["male", "female", "other"],
+      // enum: {
+      //   values: ["male", "female", "other"],
+      //   message: `{VALUE} is not a valid gender type`,
+      // },
     },
-    imageUrl: {
+    imageURL: {
       type: String,
       default:
         "https://media.istockphoto.com/id/2041572395/vector/blank-avatar-photo-placeholder-icon-vector-illustration.jpg?s=612x612&w=0&k=20&c=wSuiu-si33m-eiwGhXiX_5DvKQDHNS--CBLcyuy68n0=",
@@ -86,7 +89,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.methods.getJWT = function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id }, "Devtinder@123", {
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SIGNATURE, {
     expiresIn: "7d",
   });
   return token;

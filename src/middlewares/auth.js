@@ -10,7 +10,7 @@ const authUser = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, "Devtinder@123");
+    const decoded = jwt.verify(token, process.env.JWT_SIGNATURE);
 
     const user = await User.findById(decoded._id);
     if (!user) {

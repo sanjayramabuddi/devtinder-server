@@ -21,11 +21,11 @@ function validateEditUser(req) {
     "lastName",
     "age",
     "gender",
-    "imageUrl",
+    "imageURL",
     "skills",
     "about",
   ];
-  // const {firstName, lastName, age, gender, imageUrl, skills, about} = req;
+  // const {firstName, lastName, age, gender, imageURL, skills, about} = req;
   const isAllowed = Object.keys(req.body).every(
     (field) => allowedEdits.includes(field),      // .every => checking
   );

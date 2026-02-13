@@ -7,6 +7,7 @@ const { authUser } = require("../middlewares/auth");
 const ConnectionRequest = require("../model/connectionRequest");
 const User = require("../model/user");
 
+// Swiping right or left to send interested or ignored to the user
 requestRouter.post(
   "/request/send/:status/:toUserId",
   authUser,
@@ -61,6 +62,7 @@ requestRouter.post(
   },
 );
 
+// Accepting or Rejecting the received connections
 requestRouter.post(
   "/request/review/:status/:requestId",
   authUser,

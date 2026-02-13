@@ -4,7 +4,6 @@ const authRouter = express.Router();
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
 const { validateSignup } = require("../utils/validate");
-const SALT = 10;
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -15,14 +14,14 @@ authRouter.post("/signup", async (req, res) => {
       password,
       age,
       gender,
-      imageUrl,
+      imageURL,
       skills,
       about,
     } = req.body;
 
     validateSignup(firstName, lastName, emailId, password);
 
-    const hashedPassword = await bcrypt.hash(password, SALT);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       firstName,
@@ -31,9 +30,9 @@ authRouter.post("/signup", async (req, res) => {
       password: hashedPassword,
       age,
       gender,
-      imageUrl,
+      imageURL,
       skills,
-      about
+      about,
     });
 
     await user.save();
@@ -74,7 +73,6 @@ authRouter.post("/login", async (req, res) => {
 
       res.status(201).json({
         message: "Login Succcessful",
-        token: token,
       });
     } else {
       res.status(400).json({
