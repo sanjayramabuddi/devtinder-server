@@ -51,15 +51,15 @@ authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
     if (!emailId || !password) {
-      res.status(404).json({
-        message: "Invalid Data",
+      return res.status(400).json({
+        message: "Email or Password is missing",
       });
     }
 
     const findUser = await User.findOne({ emailId });
     if (!findUser) {
-      res.status(404).json({
-        message: "Invalid Credentials",
+      return res.status(401).json({
+        message: "Email or Password is Invalid",
       });
     }
 
@@ -71,17 +71,17 @@ authRouter.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 8 * 3600000),
       });
 
-      res.status(201).json({
+      res.status(200).json({
         message: "Login Succcessful",
         data: findUser,
       });
     } else {
-      res.status(400).json({
-        message: "Invalid Credentials",
+      res.status(401).json({
+        message: "Email or Password is Invalid",
       });
     }
   } catch (error) {
-    res.status(401).json({
+    res.status(500).json({
       message: "Something is not right",
       error: error.message,
     });

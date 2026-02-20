@@ -5,7 +5,7 @@ const { authUser } = require("../middlewares/auth");
 const UserModel = require("../model/user");
 const ConnectionRequestModel = require("../model/connectionRequest");
 
-const USER_DATA = "firstName lastName about";
+const USER_DATA = "firstName lastName about imageURL gender age skills";
 
 userRouter.get("/user/connections", authUser, async (req, res) => {
   try {

@@ -23,10 +23,11 @@ profileRouter.patch("/profile/edit", authUser, async (req, res) => {
     await loggedInUser.save();
     res.status(201).json({
       message: "Fields updated successfully!!",
+      data: loggedInUser,
     });
   } catch (error) {
     res.status(401).json({
-      message: "Can'edit these fields",
+      message: "Can't edit these fields",
     });
   }
 });
